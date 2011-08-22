@@ -1,11 +1,17 @@
 //
-//  Downloader.m
+// Downloader.m
 //
-//  aflx - always flexible
-//  http://www.aflx.de
-//  ak@aflx.de
+// aflx - always flexible
+// http://www.aflx.de
+// ak@aflx.de
 //
-//  Copyright 2011 Alexander Keller All rights reserved.
+// I have adapted the classname and signature of the method of this plugin for
+// Android and iOS.
+//
+// Copyright 2011 Alexander Keller All rights reserved.
+//
+// Thanks to Aaron K. Saunders
+// http://blog.clearlyinnovative.com
 //
 
 #import "Downloader.h"
