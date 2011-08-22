@@ -7,6 +7,9 @@
 //
 //  Copyright 2011 Alexander Keller All rights reserved.
 //
+//  Thanks to Aaron K. Saunders
+//  http://blog.clearlyinnovative.com
+//
 
 #import "Downloader.h"
 
@@ -91,9 +94,6 @@
 }
 
 - (void)dealloc {
-    //if (params) {
-//        [params release];
-//    }
     [super dealloc];
 }
 
