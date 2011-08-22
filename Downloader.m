@@ -5,13 +5,7 @@
 //  http://www.aflx.de
 //  ak@aflx.de
 //
-//  I have adapted the classname and signature of the method of this plugin for
-//  Android and iOS.
-//
 //  Copyright 2011 Alexander Keller All rights reserved.
-//
-//  Thanks to Aaron K. Saunders
-//  http://blog.clearlyinnovative.com
 //
 
 #import "Downloader.h"
@@ -43,23 +37,24 @@
 //
 -(void) download:(NSMutableArray*)paramArray {
     NSString * sourceUrl = [paramArray objectAtIndex:0];
-    NSString * fileName = [paramArray objectAtIndex:1];
-    
+    NSString * dirName = [paramArray objectAtIndex:1];
+    NSString * fileName = [paramArray objectAtIndex:2];
+    NSString * filePath = [dirName stringByAppendingString:fileName ];
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSData* data = [NSData dataWithContentsOfURL: [NSURL URLWithString:sourceUrl] ];
     
-    NSLog(@"Write file %@", fileName);
+    NSLog(@"Write file %@", filePath);
     NSError *error=[[[NSError alloc]init] autorelease];
     
     @try {
-    	BOOL response = [data writeToFile:fileName options:NSDataWritingFileProtectionNone error:&error];
+    	BOOL response = [data writeToFile:filePath options:NSDataWritingFileProtectionNone error:&error];
         
         if ( response == NO ) {
         	// send our results back to the main thread
         	[self performSelectorOnMainThread:@selector(fail:) withObject:[error description] waitUntilDone:YES];
     	} else {
         	// jump back to main thread
-        	[self performSelectorOnMainThread:@selector(success:) withObject:fileName waitUntilDone:YES];
+        	[self performSelectorOnMainThread:@selector(success:) withObject:filePath waitUntilDone:YES];
     	}
         
     	[pool drain];
@@ -97,6 +92,9 @@
 }
 
 - (void)dealloc {
+    //if (params) {
+//        [params release];
+//    }
     [super dealloc];
 }
 

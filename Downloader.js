@@ -10,18 +10,8 @@
 function Downloader() {
 }
  
-Downloader.prototype.downloadFile = function(fileUrl, dirName, fileName, overwrite, win, fail) {
-	if(overwrite == false) {
-		overwrite = "false";
-	} else {
-		overwrite = "true";
-	}
-		
+Downloader.prototype.downloadFile = function(fileUrl, dirName, fileName, win, fail) {
     console.log("downloadFile(" + fileUrl + ", " + dirName + fileName + ")");
     
-	PhoneGap.exec(win, fail, "Downloader", "downloadFile", [fileUrl, dirName + fileName]);
+	PhoneGap.exec(win, fail, "Downloader", "downloadFile", [fileUrl, dirName, fileName]);
 };
- 
-PhoneGap.addConstructor(function() {
-	//PhoneGap.addPlugin("downloader", new Downloader());
-});
