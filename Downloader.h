@@ -18,7 +18,6 @@
 
 @property (nonatomic, copy) NSString* callbackID;
 -(void) downloadFile:(NSMutableArray*)paramArray withDict:(NSMutableDictionary*)options;
-//-(void) startDownload:(NSMutableArray*)paramArray;
 -(void) download:(NSMutableArray*)paramArray;
 -(void) success:(NSMutableString*)filePath; 
 -(void) fail:(NSMutableString*)errorStr; 
