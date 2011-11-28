@@ -1,3 +1,8 @@
+# DEPRECATED #
+
+I added the code to the FileTransfer class of PhoneGap. I think it will be added in a future release!
+https://github.com/callback/callback-ios/pull/27
+
 # Download Plugin #
 By Alexander Keller
    ak@aflx.de
