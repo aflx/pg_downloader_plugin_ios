@@ -42,17 +42,23 @@
 // Download and the the file
 //
 -(void) download:(NSMutableArray*)paramArray {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
     NSString * sourceUrl = [paramArray objectAtIndex:0];
     NSString * dirName = [paramArray objectAtIndex:1];
     NSString * fileName = [paramArray objectAtIndex:2];
     NSString * filePath = [dirName stringByAppendingString:fileName ];
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSData* data = [NSData dataWithContentsOfURL: [NSURL URLWithString:sourceUrl] ];
     
     NSLog(@"Write file %@", filePath);
     NSError *error=[[[NSError alloc]init] autorelease];
     
     @try {
+        NSString * parentPath = [ filePath stringByDeletingLastPathComponent ];
+        
+        // check if the path exists => create directories if needed
+        if(![[NSFileManager defaultManager] fileExistsAtPath:parentPath ]) [[NSFileManager defaultManager] createDirectoryAtPath:parentPath withIntermediateDirectories:YES attributes:nil error:nil];
+        
     	BOOL response = [data writeToFile:filePath options:NSDataWritingFileProtectionNone error:&error];
         
         if ( response == NO ) {
@@ -62,16 +68,15 @@
         	// jump back to main thread
         	[self performSelectorOnMainThread:@selector(success:) withObject:filePath waitUntilDone:YES];
     	}
-        
-    	[pool drain];
     }
     @catch (id exception) {
         NSLog(@"Exception %@", [error description]);
             
         // jump back to main thread
         [self performSelectorOnMainThread:@selector(fail:) withObject:[error description] waitUntilDone:YES];
-    	[pool drain];
     }
+    
+    [pool drain];
 }
 
 //
