@@ -17,13 +17,12 @@ Use this to download binary files.
 var downloader = new Downloader();
 downloader.downloadFile(
 	source, 
-	directory, 
-	filename, 
-	function(filePath) {
-		console.log("Finished downloading");
+	filePath, 
+	function(entry) {
+		console.log("Finished downloading: " + entry.fullPath);
 	}, 
-	function() {
-		console.log("Error");
+	function(e) {
+		console.log("Error: " + e);
 	}
 );
 
