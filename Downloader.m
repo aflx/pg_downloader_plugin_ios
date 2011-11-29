@@ -15,11 +15,10 @@
 //
 
 #import "Downloader.h"
+#import "File.h"
 
 
 @implementation Downloader
-
-@synthesize callbackID;
 
 
 -(PGPlugin*) initWithWebView:(UIWebView*)theWebView {
@@ -27,28 +26,21 @@
     return self;
 }
 
-//
-// This function is called via PhoneGap.exec
-//
--(void) downloadFile:(NSMutableArray*)paramArray withDict:(NSMutableDictionary*)options {
-    self.callbackID = [paramArray pop];
+- (void) download:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options 
+{
+    NSLog(@"File Transfer downloading file...");
     
-    NSLog(@"Downloading file...",nil);
-    
-    [self performSelectorInBackground:@selector(download:) withObject:paramArray];
+    [self performSelectorInBackground:@selector(downloadFile:) withObject:arguments];
 }
 
-//
-// Download and the the file
-//
--(void) download:(NSMutableArray*)paramArray {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+-(void) downloadFile:(NSMutableArray*)arguments {
+    NSString * callbackId = [arguments objectAtIndex:0];
+    NSString * sourceUrl = [arguments objectAtIndex:1];
+    NSString * filePath = [arguments objectAtIndex:2];
     
-    NSString * sourceUrl = [paramArray objectAtIndex:0];
-    NSString * dirName = [paramArray objectAtIndex:1];
-    NSString * fileName = [paramArray objectAtIndex:2];
-    NSString * filePath = [dirName stringByAppendingString:fileName ];
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSData* data = [NSData dataWithContentsOfURL: [NSURL URLWithString:sourceUrl] ];
+    NSArray * results = nil;
     
     NSLog(@"Write file %@", filePath);
     NSError *error=[[[NSError alloc]init] autorelease];
@@ -63,14 +55,16 @@
         
         if ( response == NO ) {
         	// send our results back to the main thread
-        	[self performSelectorOnMainThread:@selector(fail:) withObject:[error description] waitUntilDone:YES];
+            results = [NSArray arrayWithObjects: callbackId, [error description], nil];
+        	[self performSelectorOnMainThread:@selector(downloadFail:) withObject:results waitUntilDone:YES];
     	} else {
         	// jump back to main thread
-        	[self performSelectorOnMainThread:@selector(success:) withObject:filePath waitUntilDone:YES];
+            results = [NSArray arrayWithObjects: callbackId, filePath, nil];
+        	[self performSelectorOnMainThread:@selector(downloadSuccess:) withObject:results waitUntilDone:YES];
     	}
     }
     @catch (id exception) {
-        NSLog(@"Exception %@", [error description]);
+        NSLog(@"File Transfer Error %@", [error description]);
             
         // jump back to main thread
         [self performSelectorOnMainThread:@selector(fail:) withObject:[error description] waitUntilDone:YES];
@@ -79,33 +73,35 @@
     [pool drain];
 }
 
-//
-// Call the plugin success function
-//
--(void) success:(NSMutableString *)filePath {
-    NSLog(@"Success", nil);
+-(void) downloadSuccess:(NSMutableArray *)arguments 
+{
+    NSString * callbackId = [arguments objectAtIndex:0];
+    NSString * filePath = [arguments objectAtIndex:1];
+
+    BOOL bDirRequest = NO;
+
+    NSLog(@"File Transfert Download success");
     
-    PluginResult* pluginResult = [PluginResult resultWithStatus:PGCommandStatus_OK messageAsString: 
-                                    [filePath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    [self writeJavascript: [pluginResult toSuccessCallbackString:self.callbackID]];
+    PGFile * file = [[PGFile alloc] init];
+    
+    PluginResult* result = [PluginResult resultWithStatus: PGCommandStatus_OK messageAsDictionary: [file getDirectoryEntry: filePath isDirectory: bDirRequest] cast: @"window.localFileSystem._castEntry"];
+    [self writeJavascript: [result toSuccessCallbackString:callbackId]];
 }
 
-//		
-// Call the plugin failure function
-//
--(void) fail:(NSMutableString *)errorStr {
-    NSLog(@"Error: %@", [errorStr description]);
+-(void) downloadFail:(NSMutableArray *)arguments 
+{
+    NSString * callbackId = [arguments objectAtIndex:0];
+    NSString * error = [arguments objectAtIndex:1];
+    
+    NSLog(@"File Transfer Error: %@", [error description]);
     
     PluginResult* pluginResult = [PluginResult resultWithStatus:PGCommandStatus_OK messageAsString: 
-                                    [errorStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    [self writeJavascript: [pluginResult toErrorCallbackString:self.callbackID]];
-    
+                                    [error stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                                    
+    [self writeJavascript: [pluginResult toErrorCallbackString:callbackId]];
 }
 
 - (void)dealloc {
-    //if (params) {
-//        [params release];
-//    }
     [super dealloc];
 }
 

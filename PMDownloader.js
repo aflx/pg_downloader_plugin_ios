@@ -1,11 +1,10 @@
 PMDownloader = function() {
 };
 
-PMDownloader.prototype.downloadFile = function(success, fail, params) {
+PMDownloader.prototype.download = function(success, fail, params) {
 	var me = this;
 	var fileUrl = params[0];
-	var dirName = params[1]; 
-	var fileName = params[2];
+	var fileName = params[1];
 	
 	// NOTICE: 	If you enable this, the file content will be loaded to a variable!
 	// 			Do not enable this, if the file is to big!
@@ -32,12 +31,12 @@ PMDownloader.prototype.downloadFile = function(success, fail, params) {
 	        		var file = new PMFile();
 	        		file.write(
 	        			function() {
-		        			Phonemock.success(success, dirName.replace(/\/$/,"") + "/" + fileName);
+		        			Phonemock.success(success, fileName);
 		        		}, 
 		        		function() {
 		    	        	Phonemock.fail(fail, error);
 		        		}, 
-		        		[dirName.replace(/\/$/,"") + "/" + fileName, xhr.responseText]
+		        		[fileName, xhr.responseText]
 	        		);
 		        } else {
 		        	Phonemock.fail(fail, error);
@@ -52,12 +51,12 @@ PMDownloader.prototype.downloadFile = function(success, fail, params) {
 		var file = new PMFile();
         file.write(
             function() {
-                Phonemock.success(success, dirName.replace(/\/$/,"") + "/" + fileName);
+                Phonemock.success(success, fileName);
             }, 
             function() {
                 Phonemock.fail(fail, error);
             }, 
-            [dirName.replace(/\/$/,"") + "/" + fileName, "Content of " + fileName]
+            [fileName, "Content of " + fileName]
         );
 	}
 		

@@ -10,8 +10,6 @@
 function Downloader() {
 }
  
-Downloader.prototype.downloadFile = function(fileUrl, dirName, fileName, win, fail) {
-    console.log("downloadFile(" + fileUrl + ", " + dirName + fileName + ")");
-    
-	PhoneGap.exec(win, fail, "Downloader", "downloadFile", [fileUrl, dirName, fileName]);
+Downloader.prototype.downloadFile = function(sourceUrl, filePath, successCallback, errorCallback) {
+	PhoneGap.exec(successCallback, errorCallback, 'Downloader', 'download', [sourceUrl, filePath]);
 };

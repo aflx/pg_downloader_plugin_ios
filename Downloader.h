@@ -22,10 +22,10 @@
     NSString* callbackID;  
 }
 
-@property (nonatomic, copy) NSString* callbackID;
--(void) downloadFile:(NSMutableArray*)paramArray withDict:(NSMutableDictionary*)options;
--(void) download:(NSMutableArray*)paramArray;
--(void) success:(NSMutableString*)filePath; 
--(void) fail:(NSMutableString*)errorStr; 
+- (void) download:(NSMutableArray*)arguments withDict:(NSMutableDictionary*)options;
+
+-(void) downloadFile:(NSMutableArray*)arguments;
+-(void) downloadSuccess:(NSMutableArray*)arguments; 
+-(void) downloadFail:(NSMutableArray*)arguments; 
 @end
 
