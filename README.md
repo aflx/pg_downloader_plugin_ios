@@ -22,7 +22,9 @@ downloader.downloadFile(
 		console.log("Finished downloading: " + entry.fullPath);
 	}, 
 	function(e) {
-		console.log("Error: " + e);
+		console.log("Error: " + e.code);
+		console.log("Error source: " + e.source);
+		console.log("Error target: " + e.target);	
 	}
 );
 
