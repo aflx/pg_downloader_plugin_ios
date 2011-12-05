@@ -30,6 +30,10 @@ downloader.downloadFile(
 
 </pre>
 
+## NOTE ##
+
+The latest version of this plugin uses the File class of PhoneGap. So if you have trouble with this, try an older version (for example: https://github.com/aflx/pg_downloader_plugin_ios/tree/3dda445c30fb528c6cf10760102f49b0e8326437) or use the sources of PhoneGap (https://github.com/callback/callback-ios).
+
 ## REFERENCE ##
 
 iOS:
